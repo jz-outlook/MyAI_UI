@@ -9,3 +9,5 @@ root_path = os.path.dirname(abs_path)
 root_path = os.path.dirname(root_path)
 
 print(abs_path, root_path)
+
+
