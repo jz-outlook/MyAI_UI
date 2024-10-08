@@ -17,7 +17,11 @@ class GetPath:
         path = self.path + '/data/mp3/temp.mp3'
         return str(path)
 
-    def get_case_path(self):
+    def get_login_case_path(self):
+        path = self.path + '/data/login/login.xls'
+        return str(path)
+
+    def get_data_case_path(self):
         path = self.path + '/data/data.xls'
         return str(path)
 

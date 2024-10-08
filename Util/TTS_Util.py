@@ -27,4 +27,4 @@ class TextToSpeechPlayer:
 
 # 使用示例
 # player = TextToSpeechPlayer()  # 你可以指定任何支持的语言
-# player.play_text("I am happy today")
+# player.play_text("Hello")

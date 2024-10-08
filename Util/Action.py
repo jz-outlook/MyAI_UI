@@ -4,6 +4,10 @@ import time
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.pointer_input import PointerInput
 
 from Util.Element_operation import ElementChecker
 from Util.TTS_Util import TextToSpeechPlayer
@@ -63,10 +67,11 @@ def perform_action(driver, by, value, action, data):
     try:
         if action == "click" and by == 'xpath':
             element = driver.find_element(by=AppiumBy.XPATH, value=value)
-            if element.is_enabled():
-                element.click()
-            else:
-                print("元素不可点击，无法执行点击操作")
+            element.click()
+
+        elif action == 'class_name':
+            element = driver.find_element(by=AppiumBy.CLASS_NAME, value=value)
+            element.click()
 
         elif action == 'text':
             element = driver.find_element(by=AppiumBy.XPATH, value=value)
@@ -91,6 +96,45 @@ def perform_action(driver, by, value, action, data):
             else:
                 print("元素不可点击，无法执行输入操作")
 
+        elif action == "move":
+            # 定位到元素
+            element = driver.find_element(by=AppiumBy.XPATH, value=value)
+            element_location = element.location
+            x = element_location['x']
+            y = element_location['y']
+            element_size = element.size
+            height = element_size['height']
+            width = element_size['width']
+            # 计算元素中心点位置
+            center_x = x + width / 2
+            center_y = y + height / 2
+            # 将点击位置下移10个像素
+            offset_y = center_y + 30
+            # 使用TouchAction执行点击操作
+            action = TouchAction(driver)
+            action.tap(x=center_x, y=offset_y).perform()
+
+
+        elif action == 'Up_sliding':
+            actions = ActionChains(driver)
+            actions.w3c_actions = ActionBuilder(driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch"))
+            # 屏幕中央起始位置
+            actions.w3c_actions.pointer_action.move_to_location(529, 1187)
+            actions.w3c_actions.pointer_action.pointer_down()
+            # 滑动半屏
+            actions.w3c_actions.pointer_action.move_to_location(529, 580)
+            actions.w3c_actions.pointer_action.release()
+            actions.perform()
+            time.sleep(10)
+
+        elif action == 'if':
+            element = driver.find_element(by=AppiumBy.XPATH, value=value)
+            element_text = element.text
+            print("元素的文本是:", element_text)
+
+        elif action == 'sleep':
+            time.sleep(30)
+
         elif action == "long_press":
             number = int(data.get('duration', 1))  # 如果未设置时间，默认1秒钟
             duration = int(data.get('duration', number))
@@ -100,8 +144,8 @@ def perform_action(driver, by, value, action, data):
 
                 # 查看元素当前的状态
                 if ElementChecker().is_element_displayed(element) and ElementChecker().is_element_clickable(element):
-                    print('元素可见,可点击')
-                    print(f'分值的元素值是{Score_element}')
+                    # print('元素可见,可点击')
+                    # print(f'分值的元素值是{Score_element}')
                     # 设置事件，通知其他线程可以执行，启动长按操作的线程
                     event.set()
                     long_press_thread = threading.Thread(target=long_press_thread_function,
@@ -117,8 +161,8 @@ def perform_action(driver, by, value, action, data):
                 print("元素不可见，不可点击")
 
     except NoSuchElementException:
-        name = data.get('name')
-        print(f"该元素不存在直接跳过:{name}")
+        name = data.get('id')
+        print(f"该元素不存在直接跳过,元素ID:{name}")
 
 
 def check_last_digit_and_wait(number):
