@@ -14,8 +14,3 @@ print(abs_path, root_path)
 
 
 
-
-# 增加了一行测试
-# 可以的原来是这么玩的
-
-
