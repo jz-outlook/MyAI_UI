@@ -1,6 +1,6 @@
 import threading
 import time
-
+import pytest
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.common.touch_action import TouchAction
 from selenium.common.exceptions import NoSuchElementException
@@ -68,6 +68,9 @@ def perform_action(driver, by, value, action, data):
         if action == "click" and by == 'xpath':
             element = driver.find_element(by=AppiumBy.XPATH, value=value)
             element.click()
+
+        elif action == 'skip':
+            pytest.skip("模块为sql，将执行sql操作，跳过此用例")
 
         elif action == 'class_name':
             element = driver.find_element(by=AppiumBy.CLASS_NAME, value=value)
