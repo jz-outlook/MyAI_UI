@@ -70,20 +70,19 @@ def check_operation(driver, by, value, action, case):
     try:
         perform_action(driver, by, value, action, case)
 
-        # 获取 sleep 值，并验证其为数字或可转换为数字的字符串
+        # 获取 sleep 值
         sleep_value = case.get('sleep')
-        if sleep_value is not None:
-            # 尝试将 sleep 值转换为整数
+        # 检查 sleep_value 是否存在且不是空字符串
+        if sleep_value:
             try:
+                # 将 sleep 值转换为整数
                 sleep_time = int(sleep_value)
                 time.sleep(sleep_time)
                 print('执行了等待操作')
             except ValueError:
-                print(f"等待时间设置错误，需要的是一个数字整数格式，但得到了 '{sleep_value}'")
+                print(f"等待时间设置错误，需要的是一个整数，但得到了 '{sleep_value}'")
                 raise
-        else:
-            # 如果没有设置 sleep，则不进行等待
-            pass
+        # 如果 sleep_value 是 None 或空字符串，不执行任何操作
 
     except Exception as e:
         # 这里可以添加日志记录或者其他的异常处理逻辑
