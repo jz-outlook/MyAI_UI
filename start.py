@@ -4,7 +4,7 @@ from appium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from Util.Action import perform_action
+from Util.Action import perform_action, check_operation
 from Util.GetPath import GetPath
 from Util.ReadExcelhandler import OperationExcel
 
@@ -43,16 +43,12 @@ def wait_for_element(driver, by, value, timeout=20):
 class TestApp:
 
     @pytest.mark.parametrize("case", excel_data)
-    def test_ui_case(self, driver, case):
+    def test_case(self, driver, case):
         try:
-            # 1. 显性等待目标元素，并添加元素存在性的断言
-            element = wait_for_element(driver, case['by'], case['Element_value'], timeout=20)
-            assert element is not None, f"元素 {case['Element_value']} 不存在或无法定位"
+            # 1. 检查 and 执行
+            check_operation(driver, case['by'], case['Element_value'], case['action'], case)
 
-            # 2. 执行操作，并对操作后的状态进行断言
-            perform_action(driver, case['by'], case['Element_value'], case['action'], case)
-
-            # 3. 检查操作后的状态
+            # 2. 检查操作后的状态
             if 'expected_element_by' in case and 'expected_element_value' in case:
                 # 检查操作后预期元素是否存在
                 with allure.step(f"验证元素 {case['expected_element_value']} 是否存在"):

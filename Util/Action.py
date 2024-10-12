@@ -8,7 +8,8 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from Util.Element_operation import ElementChecker
 from Util.TTS_Util import TextToSpeechPlayer
 
@@ -63,14 +64,26 @@ def play_mp3_thread_function(data, event):
     TextToSpeechPlayer().play_text(str(mp3))
 
 
+def check_operation(driver, by, value, action, data):
+    if action == 'skip':
+        pytest.skip("步骤为跳过步骤，将跳过此用例执行")
+    else:
+        perform_action(driver, by, value, action, data)
+
+
+def wait_for_element(driver, by, value, timeout=20):
+    """显性等待：等待元素出现在 DOM 中"""
+    return WebDriverWait(driver, timeout).until(EC.presence_of_element_located((by, value)))
+
 def perform_action(driver, by, value, action, data):
+    # 显性等待目标元素
+    element = wait_for_element(driver, data['by'], data['Element_value'], timeout=20)
+    assert element is not None, f"元素 {data['Element_value']} 不存在或无法定位"
+
     try:
         if action == "click" and by == 'xpath':
             element = driver.find_element(by=AppiumBy.XPATH, value=value)
             element.click()
-
-        elif action == 'skip':
-            pytest.skip("模块为sql，将执行sql操作，跳过此用例")
 
         elif action == 'class_name':
             element = driver.find_element(by=AppiumBy.CLASS_NAME, value=value)
