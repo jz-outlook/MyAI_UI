@@ -72,6 +72,8 @@ def check_operation(driver, by, value, action, case):
         if case.get('sleep') is not None:
             time.sleep(case['sleep'])
             print('执行了等待操作')
+        else:
+            time.sleep(0)
     except Exception as e:
         # 这里可以添加日志记录或者其他的异常处理逻辑
         print(f"执行操作时发生异常: {e}")
