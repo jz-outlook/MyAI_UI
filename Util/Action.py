@@ -64,11 +64,19 @@ def play_mp3_thread_function(data, event):
     TextToSpeechPlayer().play_text(str(mp3))
 
 
-def check_operation(driver, by, value, action, data):
+def check_operation(driver, by, value, action, case):
     if action == 'skip':
         pytest.skip("步骤为跳过步骤，将跳过此用例执行")
-    else:
-        perform_action(driver, by, value, action, data)
+    try:
+        perform_action(driver, by, value, action, case)
+        if case.get('sleep') is not None:
+            time.sleep(case['sleep'])
+            print('执行了等待操作')
+    except Exception as e:
+        # 这里可以添加日志记录或者其他的异常处理逻辑
+        print(f"执行操作时发生异常: {e}")
+        raise
+
 
 
 def wait_for_element(driver, by, value, timeout=20):
@@ -147,9 +155,6 @@ def perform_action(driver, by, value, action, data):
             element = driver.find_element(by=AppiumBy.XPATH, value=value)
             element_text = element.text
             print("元素的文本是:", element_text)
-
-        elif action == 'sleep':
-            time.sleep(30)
 
         elif action == "long_press":
             number = int(data.get('duration', 1))  # 如果未设置时间，默认1秒钟
