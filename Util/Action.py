@@ -69,11 +69,22 @@ def check_operation(driver, by, value, action, case):
         pytest.skip("步骤为跳过步骤，将跳过此用例执行")
     try:
         perform_action(driver, by, value, action, case)
-        if case.get('sleep') is not None:
-            time.sleep(case['sleep'])
-            print('执行了等待操作')
+
+        # 获取 sleep 值，并验证其为数字或可转换为数字的字符串
+        sleep_value = case.get('sleep')
+        if sleep_value is not None:
+            # 尝试将 sleep 值转换为整数
+            try:
+                sleep_time = int(sleep_value)
+                time.sleep(sleep_time)
+                print('执行了等待操作')
+            except ValueError:
+                print(f"等待时间设置错误，需要的是一个数字整数格式，但得到了 '{sleep_value}'")
+                raise
         else:
-            time.sleep(0)
+            # 如果没有设置 sleep，则不进行等待
+            pass
+
     except Exception as e:
         # 这里可以添加日志记录或者其他的异常处理逻辑
         print(f"执行操作时发生异常: {e}")
