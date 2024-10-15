@@ -152,13 +152,14 @@ def perform_action(driver, by, value, action, data):
 
 
         elif action == 'Up_sliding':
+            # 需要定位到要滑动的页面上的元素
             actions = ActionChains(driver)
             actions.w3c_actions = ActionBuilder(driver, mouse=PointerInput(interaction.POINTER_TOUCH, "touch"))
             # 屏幕中央起始位置
-            actions.w3c_actions.pointer_action.move_to_location(529, 1187)
+            actions.w3c_actions.pointer_action.move_to_location(500, 1500)
             actions.w3c_actions.pointer_action.pointer_down()
             # 滑动半屏
-            actions.w3c_actions.pointer_action.move_to_location(529, 580)
+            actions.w3c_actions.pointer_action.move_to_location(500, 600)
             actions.w3c_actions.pointer_action.release()
             actions.perform()
             time.sleep(10)
